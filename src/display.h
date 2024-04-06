@@ -7,7 +7,7 @@
 #define CLK 7 // Clock Input
 #define RCK 4 // Register Clock (Latch)
 
-void setup_display();
+void setupDisplay();
 void displayNumber(int number);
 
 #endif

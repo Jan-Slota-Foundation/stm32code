@@ -38,7 +38,7 @@ void displayNumber(int number) {
 
 }
 
-void setup_display() {
+void setupDisplay() {
   // Initialize pins
   pinMode(SER, OUTPUT);
   pinMode(CLK, OUTPUT);
