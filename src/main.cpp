@@ -1,5 +1,6 @@
 #include <Arduino.h>
 #include "display.h"
+#include "songs.h"
 
 // pins
 #define BUTTON_LED 12
@@ -12,6 +13,22 @@
 // led states
 #define LED_ON LOW
 #define LED_OFF HIGH
+
+/*
+  notes:
+  A
+  A#
+  B
+  C
+  C#
+  D
+  D#
+  E
+  F
+  F#
+  G
+  G#
+*/
 
 /*
   LEDS ARE CATODE CONNECTED
@@ -46,6 +63,34 @@ while (digitalRead(BUTTON_LEFT));     // wait until S1 (low active)
     delay(1000);
   }
 */
+void playSong(const Song &song);
+
+double calculateFrequency(int noteNumber, int octave) {
+    // Handle pause
+    if (noteNumber == 0) {
+        return 0.0;
+    }
+
+    // Adjust note index for 1-based input
+    noteNumber = noteNumber - 1;
+    octave = octave - 1;
+
+    // Ensure note is within valid range
+    if (noteNumber < 0 || noteNumber >= 12) {
+        return -1.0; // Indicate invalid note
+    }
+
+    // Ensure octave is valid
+    if (octave < 0 || octave > 8) {
+        return -1.0; // Indicate invalid octave
+    }
+
+    // Calculate the frequency
+    double res =  55.00 * pow(2.0, (noteNumber + (12 * octave)) / 12.0); 
+    // round here to 2 decimal places
+    float value = (int)(res * 100 + .5);
+    return (float)value / 100;
+}
 
 void setup() {
   pinMode(SERIAL_LED, OUTPUT);
@@ -69,7 +114,24 @@ void setup() {
 
 void loop() {
   if (!digitalRead(BUTTON_LEFT)) {
-    // play music
-    
+    playSong(marioTheme);
+    delay(5000);
   }
+}
+
+
+void playSong(const Song &song) {
+    // Calculate duration of a quarter note in milliseconds
+    float quarterNoteDuration = 60000.0 / song.tempo; 
+    float fullNoteDuration = quarterNoteDuration * 4;
+
+    for (int i = 0; i < MAX_NOTES && song.melody[i].note != -1; i++) {
+        double frequency = calculateFrequency(song.melody[i].note, song.melody[i].octave); 
+        int noteDuration = quarterNoteDuration * song.melody[i].duration;
+
+        tone(BUZZER_PIN, frequency, noteDuration);
+        delay(noteDuration); // Rest is implied, no extra calculations needed
+        noTone(BUZZER_PIN);
+        delay(fullNoteDuration - noteDuration); // Rest is implied, no extra calculations needed
+    }
 }
