@@ -3,6 +3,8 @@
 #include "songs.h"
 
 // pins
+#define LED_2 10
+#define LED_3 11
 #define BUTTON_LED 12
 #define SERIAL_LED 13
 #define BUTTON_LEFT A1
@@ -98,12 +100,17 @@ void setup() {
   pinMode(SERIAL_LED, OUTPUT);
   digitalWrite(SERIAL_LED, LED_OFF);
 
+  pinMode(LED_2, OUTPUT);
+  digitalWrite(LED_2, LED_OFF);
+  pinMode(LED_3, OUTPUT);
+  digitalWrite(LED_3, LED_OFF);
+
   pinMode(BUTTON_LED, OUTPUT);
   digitalWrite(BUTTON_LED, LED_OFF);
 
   pinMode(BUTTON_LEFT, INPUT);
-  pinMode(BUTTON_MIDDLE, INPUT_PULLDOWN);
-  pinMode(BUTTON_RIGHT, INPUT_PULLDOWN);
+  pinMode(BUTTON_MIDDLE, INPUT);
+  pinMode(BUTTON_RIGHT, INPUT);
 
   digitalWrite(BUZZER_PIN, HIGH);   // first! else short sound
   pinMode(BUZZER_PIN, OUTPUT);
@@ -115,37 +122,38 @@ void setup() {
 }
 
 void loop() {
-  if (!digitalRead(BUTTON_RIGHT)) {
-    // citame noty
-      tone(BUZZER_PIN, calculateFrequency(4, 3), 1000);
-
+  if (!digitalRead(BUTTON_LEFT)) {
       Song s;
       Note currentNote;
       int songIndex = 0;
+      digitalWrite(LED_2, LED_ON);
 
-      while (currentNote.note != -1) {
-        while (Serial.available() < 3) {
-          delay(100);
-        }
+      while (currentNote.note != ('K' - '0')) {
+        while (Serial.available() < 1) {delay(100);}
 
-        currentNote.note = Serial.parseInt();
-        currentNote.octave = Serial.parseInt();
-        currentNote.duration = Serial.parseInt();
+        char *buffer = new char[3];
+        currentNote.note = Serial.readBytes(buffer, 3);
+        currentNote.note = buffer[0] - '0';
 
+        currentNote.octave = buffer[1] - '0';
+
+        currentNote.duration = buffer[2] - '0';
+ 
         s.melody[songIndex] = currentNote;
         songIndex++;
       }
 
-      delay(500);
+      while (Serial.available() < 1) {}
 
-      while (Serial.available() < 1) {
-        delay(100);
-      }
-
-      s.tempo = Serial.parseInt();
-
+      // s.tempo = Serial.parseInt();
+      // Serial.println(s.tempo);
+      s.tempo = 128;
+      digitalWrite(LED_3, LED_OFF);
+      digitalWrite(LED_2, LED_OFF);
       playSong(s);
       delay(1000);
+      noTone(BUZZER_PIN);
+      digitalWrite(BUTTON_LED, LED_OFF);
   }
 
   // while (Serial.available() < 1) {
@@ -156,8 +164,6 @@ void loop() {
   // if (x == 8) {
   //   digitalWrite(BUTTON_LED,t67tftLED_ON);
   // }
-
-  delay(1000);
 }
 
 
@@ -166,7 +172,7 @@ void playSong(const Song &song) {
     float quarterNoteDuration = 60000.0 / song.tempo; 
     float fullNoteDuration = quarterNoteDuration * 4;
 
-    for (int i = 0; i < MAX_NOTES && song.melody[i].note != -1; i++) {
+    for (int i = 0; i < MAX_NOTES && song.melody[i].note != ('K' - '0'); i++) {
         double frequency = calculateFrequency(song.melody[i].note, song.melody[i].octave); 
         int noteDuration = quarterNoteDuration * song.melody[i].duration;
 
@@ -174,5 +180,7 @@ void playSong(const Song &song) {
         delay(noteDuration); // Rest is implied, no extra calculations needed
         noTone(BUZZER_PIN);
         delay(fullNoteDuration - noteDuration); // Rest is implied, no extra calculations needed
+
+        delay(1000);
     }
 }
