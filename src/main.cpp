@@ -6,6 +6,7 @@
 #define BUTTON_LEFT A1
 #define BUTTON_MIDDLE A2
 #define BUTTON_RIGHT A3
+#define BUZZER_PIN 3
 
 // led states
 #define LED_ON LOW
@@ -53,12 +54,14 @@ void setup() {
   digitalWrite(SERIAL_LED, LED_OFF);
 
   pinMode(BUTTON_LED, OUTPUT);
+  digitalWrite(BUTTON_LED, LED_OFF);
 
   pinMode(BUTTON_LEFT, INPUT);
-  // pinMode(BUTTON_MIDDLE, INPUT_PULLDOWN);
-  // pinMode(BUTTON_RIGHT, INPUT_PULLDOWN);
+  pinMode(BUTTON_MIDDLE, INPUT_PULLDOWN);
+  pinMode(BUTTON_RIGHT, INPUT_PULLDOWN);
 
-  digitalWrite(BUTTON_LED, LED_OFF);
+  digitalWrite(BUZZER_PIN, HIGH);   // first! else short sound
+  pinMode(BUZZER_PIN, OUTPUT);
 
   Serial.begin(9600);
   digitalWrite(SERIAL_LED, LED_ON);
@@ -66,7 +69,13 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
-
+  for (int i = 0; i < 10; i++)    
+  {
+    digitalWrite(BUZZER_PIN, LOW);
+    delay (5);
+    digitalWrite(BUZZER_PIN, HIGH);
+    delay (10);
+  }
 }
 
 // put function definitions here:
