@@ -74,7 +74,9 @@ double calculateFrequency(int noteNumber, int octave) {
     // Adjust note index for 1-based input
     noteNumber = noteNumber - 1;
     octave = octave - 1;
-
+    if (noteNumber != 0 && noteNumber != 2) {
+      octave -= 1;
+    }
     // Ensure note is within valid range
     if (noteNumber < 0 || noteNumber >= 12) {
         return -1.0; // Indicate invalid note
@@ -88,8 +90,8 @@ double calculateFrequency(int noteNumber, int octave) {
     // Calculate the frequency
     double res =  55.00 * pow(2.0, (noteNumber + (12 * octave)) / 12.0); 
     // round here to 2 decimal places
-    float value = (int)(res * 100 + .5);
-    return (float)value / 100;
+    float b = round(res * 100.0) / 100.0;
+    return b;
 }
 
 void setup() {
@@ -113,10 +115,49 @@ void setup() {
 }
 
 void loop() {
-  if (!digitalRead(BUTTON_LEFT)) {
-    playSong(marioTheme);
-    delay(5000);
+  if (!digitalRead(BUTTON_RIGHT)) {
+    // citame noty
+      tone(BUZZER_PIN, calculateFrequency(4, 3), 1000);
+
+      Song s;
+      Note currentNote;
+      int songIndex = 0;
+
+      while (currentNote.note != -1) {
+        while (Serial.available() < 3) {
+          delay(100);
+        }
+
+        currentNote.note = Serial.parseInt();
+        currentNote.octave = Serial.parseInt();
+        currentNote.duration = Serial.parseInt();
+
+        s.melody[songIndex] = currentNote;
+        songIndex++;
+      }
+
+      delay(500);
+
+      while (Serial.available() < 1) {
+        delay(100);
+      }
+
+      s.tempo = Serial.parseInt();
+
+      playSong(s);
+      delay(1000);
   }
+
+  // while (Serial.available() < 1) {
+  //   delay(100);
+  // }
+  // int x = Serial.parseInt();
+
+  // if (x == 8) {
+  //   digitalWrite(BUTTON_LED,t67tftLED_ON);
+  // }
+
+  delay(1000);
 }
 
 
