@@ -1,6 +1,8 @@
 #include <Arduino.h>
 #include "display.h"
 #include "songs.h"
+#include "note.h"
+#include "fs.h"
 
 // pins
 #define LED_2 10
@@ -97,7 +99,7 @@ double calculateFrequency(int noteNumber, int octave) {
 }
 
 void setup() {
-  pinMode(SERIAL_LED, OUTPUT);
+ /* pinMode(SERIAL_LED, OUTPUT);
   digitalWrite(SERIAL_LED, LED_OFF);
 
   pinMode(LED_2, OUTPUT);
@@ -117,8 +119,32 @@ void setup() {
 
   setupDisplay();
 
+  
+  digitalWrite(SERIAL_LED, LED_ON);  */
+
+  
+  // Initialize EEPROM
   Serial.begin(9600);
-  digitalWrite(SERIAL_LED, LED_ON);
+  init_fs();
+  Song debug1 = Song();
+  debug1.melody[0] = Note{1, 1, 1};
+  debug1.melody[1] = Note{2, 2, 2};
+  debug1.melody[2] = Note{3, 3, 3};
+
+  fs_write(5, debug1);
+
+  // now read it back
+
+  Song debug2 = fs_read(5);
+  for (int i = 0; i < MAX_NOTES; i++) {
+    short a = debug2.melody[i].note;
+    short b = debug2.melody[i].octave;
+    short c = debug2.melody[i].duration;
+    Serial.println(a, HEX);
+    Serial.println(b, HEX);
+    Serial.println(c, HEX);
+  }
+
 }
 
 void loop() {
