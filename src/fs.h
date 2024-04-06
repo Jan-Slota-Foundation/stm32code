@@ -4,11 +4,13 @@
     typedef struct tonefs {
         int number_of_songs;
         int song_offsets[10]; // Max 10 songs
-        int next_offset;
     } tonefs;
 
-    tonefs init_fs();
+    tonefs get_fs();
 
     Song fs_read(const int offset);
-    void fs_write(int offset, const Song& song);
+    void fs_write(const Song& song);
+    void update_fs(const tonefs& fs);
+    int calculate_new_offset(const tonefs& fs);
+    void nuke_fs();
 #endif

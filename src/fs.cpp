@@ -6,7 +6,6 @@ tonefs get_fs() {
     tonefs fs;
     if (EEPROM.read(0) == 0x1C) {
         fs.number_of_songs = EEPROM.read(1);
-        fs.next_offset = EEPROM.read(2);
         for(int i = 0; i < fs.number_of_songs; i++) {
             fs.song_offsets[i] = EEPROM.read(3 + i);
         }
@@ -15,7 +14,7 @@ tonefs get_fs() {
         fs.number_of_songs = 0;
         EEPROM.write(0, 0x1C);
         EEPROM.write(1, 0);
-        EEPROM.write(2, 15);
+        EEPROM.write(2, 28);
         for(int i = 0; i < 10; i++) {
             EEPROM.write(3 + i, 0);
         }
@@ -23,9 +22,14 @@ tonefs get_fs() {
     }
 }
 
+void nuke_fs() {
+    EEPROM.write(0, 0);
+    get_fs();
+}
+
 void update_fs(const tonefs& fs) {
     EEPROM.write(1, fs.number_of_songs);
-    EEPROM.write(2, fs.next_offset);
+    EEPROM.write(2, 28); // RESERVED
     for(int i = 0; i < fs.number_of_songs; i++) {
         EEPROM.write(3 + i, fs.song_offsets[i]);
     }
@@ -56,18 +60,31 @@ Song fs_read(const int index) {
     return song;
 }
 
+int calculate_new_offset(const tonefs& fs) {
+    int offset = 0;
+    if (fs.number_of_songs == 0) 
+        return 15;
+    
+    // Loop condition corrected to < fs.number_of_songs
+    for(int i = 0; i < fs.number_of_songs; i++) {
+        int size = EEPROM.read(fs.song_offsets[i]);
+        offset += (size * 2) + 10;
+    }
+    return offset; // Ensure a value is returned for all paths
+}
+
 void fs_write(const Song& song) {
     int size = MAX_NOTES;
 
-    // calculatr update value for update_fs
     tonefs fs = get_fs();
-    int index = fs.next_offset;
+    int index = calculate_new_offset(fs);
     int newIndex = index + 2 + size * 2;
     tonefs new_fs = fs;
-    
-    new_fs.number_of_songs++;
+
     new_fs.song_offsets[new_fs.number_of_songs] = index;
-    new_fs.next_offset = newIndex;
+    new_fs.number_of_songs++;
+
+    update_fs(new_fs);
 
     EEPROM.write(index, size);
     EEPROM.write(index + 1, (song.tempo / 10));
