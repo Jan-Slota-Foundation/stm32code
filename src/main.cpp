@@ -70,7 +70,22 @@ void setup() {
   Serial.begin(9600);
 }
 
+#define C4  262
+#define D4  294
+#define E4  330
+
+int melody[] = {
+  C4, D4, E4, E4, D4, C4
+};
+int melodyLength = 6; // Number of notes in the melody
+
 void loop() {
+  // for (int i = 0; i < melodyLength; i++) {
+  //   tone(BUZZER_PIN, melody[i]); 
+  //   delay(500);  // Length of each note
+  //   noTone(BUZZER_PIN);
+  //   delay(100);  // Gap between notes
+  // }
   int u = update_button(&b);
   run(u);
 }

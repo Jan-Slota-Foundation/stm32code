@@ -47,4 +47,5 @@ void handle_complex(int r1, int r2, State *state) {
 
 void finish_complex_state() {
   // Do nothing
+  displayNumber(0);
 }
