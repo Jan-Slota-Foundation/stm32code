@@ -5,7 +5,7 @@ void playSong(const Song &song) {
     float quarterNoteDuration = 60000.0 / song.tempo; 
     float fullNoteDuration = quarterNoteDuration * 4;
 
-    for (int i = 0; i < MAX_NOTES && song.melody[i].note != ('K' - '0'); i++) {
+    for (int i = 0; i < MAX_NOTES && song.melody[i].note != TERMINATE; i++) {
         double frequency = calculateFrequency(song.melody[i].note, song.melody[i].octave); 
         int noteDuration = quarterNoteDuration * song.melody[i].duration;
 

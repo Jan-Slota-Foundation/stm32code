@@ -2,8 +2,6 @@
 #include "display.h"
 #include "songs.h"
 #include "note.h"
-#include "fs.h"
-#include <EEPROM.h>
 
 // pins
 #define LED_2 10
@@ -47,27 +45,34 @@ while (digitalRead(BUTTON_LEFT));     // wait until S1 (low active)
     delay(1000);
   }
 */
-void playSong(const Song &song);
+
+void setup_buttons() {
+  pinMode(BUTTON_LEFT, INPUT);
+  pinMode(BUTTON_MIDDLE, INPUT);
+  pinMode(BUTTON_RIGHT, INPUT);
+}
+
+void setup_leds() {
+  pinMode(LED_2, OUTPUT);
+  digitalWrite(LED_2, LED_OFF);
+  pinMode(LED_3, OUTPUT);
+  digitalWrite(LED_3, LED_OFF);
+  pinMode(BUTTON_LED, OUTPUT);
+  digitalWrite(BUTTON_LED, LED_OFF);
+}
+
+void setup_buzzer() {
+  digitalWrite(BUZZER_PIN, HIGH);   // first! else short sound
+  pinMode(BUZZER_PIN, OUTPUT);
+}
 
 void setup() {
   pinMode(SERIAL_LED, OUTPUT);
   digitalWrite(SERIAL_LED, LED_OFF);
 
-  pinMode(LED_2, OUTPUT);
-  digitalWrite(LED_2, LED_OFF);
-  pinMode(LED_3, OUTPUT);
-  digitalWrite(LED_3, LED_OFF);
-
-  pinMode(BUTTON_LED, OUTPUT);
-  digitalWrite(BUTTON_LED, LED_OFF);
-
-  pinMode(BUTTON_LEFT, INPUT);
-  pinMode(BUTTON_MIDDLE, INPUT);
-  pinMode(BUTTON_RIGHT, INPUT);
-
-  digitalWrite(BUZZER_PIN, HIGH);   // first! else short sound
-  pinMode(BUZZER_PIN, OUTPUT);
-
+  setup_buttons();
+  setup_leds();
+  setup_buzzer();
   setupDisplay();
 
   digitalWrite(SERIAL_LED, LED_ON); 
@@ -81,7 +86,7 @@ void loop() {
       int songIndex = 0;
       digitalWrite(LED_2, LED_ON);
 
-      while (currentNote.note != ('K' - '0')) {
+      while (currentNote.note != TERMINATE) {
         while (Serial.available() < 1) {delay(100);}
 
         char *buffer = new char[3];
@@ -108,13 +113,4 @@ void loop() {
       noTone(BUZZER_PIN);
       digitalWrite(BUTTON_LED, LED_OFF);
   }
-
-  // while (Serial.available() < 1) {
-  //   delay(100);
-  // }
-  // int x = Serial.parseInt();
-
-  // if (x == 8) {
-  //   digitalWrite(BUTTON_LED,t67tftLED_ON);
-  // }
 }
