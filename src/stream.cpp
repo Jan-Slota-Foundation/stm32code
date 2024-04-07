@@ -40,4 +40,5 @@ void finish_stream_state() {
     song_to_play = -1;
     init_stream = 0;  
     last_stream_not_change = 0;
+    current_stream_note = 0;
 } 
