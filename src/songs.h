@@ -1,7 +1,6 @@
 #ifndef SONGLIST_H
 #define SONGLIST_H
 
-#include "note.h"
 #include "song.h"
 
 // koniec -1
@@ -25,6 +24,7 @@ C4 (1) - C4 (1/2) - G4 (1/2) - A3 (1) - C4 (1) - C4 (1/2) - G4 (1/2) - A3 (1)
 G4 (1) - G4 (1/2) - F4 (1/2) - E4 (1) - G4 (1) - G4 (1/2) - F4 (1/2) - E4 (1)
 E4 (1) - E4 (1/2) - D4 (1/2) - C4 (1) - E4 (1) - E4 (1/2) - D4 (1/2) - C4 (1)
 */
+
 
 const Song marioTheme = {
     {
@@ -121,6 +121,13 @@ const Song happyBirthday = {
         {6, 3, 3},
     },
     250 // 125 * 2
+};
+
+
+const Song static_songs[] = {
+    marioTheme,
+    ohMacDonald,
+    happyBirthday
 };
 
 #endif

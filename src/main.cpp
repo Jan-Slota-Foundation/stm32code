@@ -1,20 +1,10 @@
-#include <Arduino.h>
 #include "display.h"
 #include "songs.h"
 #include "note.h"
+#include "runner.h"
+#include "main.h"
+#include "button.h"
 
-// pins
-#define LED_2 10
-#define LED_3 11
-#define BUTTON_LED 12
-#define SERIAL_LED 13
-#define BUTTON_LEFT A1
-#define BUTTON_MIDDLE A2
-#define BUTTON_RIGHT A3
-
-// led states
-#define LED_ON LOW
-#define LED_OFF HIGH
 
 /*
 log for printing/reading from serial:
@@ -45,20 +35,19 @@ while (digitalRead(BUTTON_LEFT));     // wait until S1 (low active)
     delay(1000);
   }
 */
+Button b;
 
 void setup_buttons() {
-  pinMode(BUTTON_LEFT, INPUT);
-  pinMode(BUTTON_MIDDLE, INPUT);
-  pinMode(BUTTON_RIGHT, INPUT);
+  b = init_button(BUTTON_LEFT);
 }
 
 void setup_leds() {
+  pinMode(LED_1, OUTPUT);
+  digitalWrite(LED_1, LED_OFF);
   pinMode(LED_2, OUTPUT);
   digitalWrite(LED_2, LED_OFF);
   pinMode(LED_3, OUTPUT);
   digitalWrite(LED_3, LED_OFF);
-  pinMode(BUTTON_LED, OUTPUT);
-  digitalWrite(BUTTON_LED, LED_OFF);
 }
 
 void setup_buzzer() {
@@ -75,42 +64,46 @@ void setup() {
   setup_buzzer();
   setupDisplay();
 
-  digitalWrite(SERIAL_LED, LED_ON); 
+  setup_runner();
+
+  //digitalWrite(SERIAL_LED, LED_ON); 
   Serial.begin(9600);
 }
 
 void loop() {
-  if (!digitalRead(BUTTON_LEFT)) {
-      Song s;
-      Note currentNote;
-      int songIndex = 0;
-      digitalWrite(LED_2, LED_ON);
+  int u = update_button(&b);
+  run(u);
+  // if (!digitalRead(BUTTON_LEFT)) {
+  //     Song s;
+  //     Note currentNote;
+  //     int songIndex = 0;
+  //     digitalWrite(LED_2, LED_ON);
 
-      while (currentNote.note != TERMINATE) {
-        while (Serial.available() < 1) {delay(100);}
+  //     while (currentNote.note != TERMINATE) {
+  //       while (Serial.available() < 1) {delay(100);}
 
-        char *buffer = new char[3];
-        currentNote.note = Serial.readBytes(buffer, 3);
-        currentNote.note = buffer[0] - '0';
+  //       char *buffer = new char[3];
+  //       currentNote.note = Serial.readBytes(buffer, 3);
+  //       currentNote.note = buffer[0] - '0';
 
-        currentNote.octave = buffer[1] - '0';
+  //       currentNote.octave = buffer[1] - '0';
 
-        currentNote.duration = buffer[2] - '0';
+  //       currentNote.duration = buffer[2] - '0';
  
-        s.melody[songIndex] = currentNote;
-        songIndex++;
-      }
+  //       s.melody[songIndex] = currentNote;
+  //       songIndex++;
+  //     }
 
-      while (Serial.available() < 1) {}
+  //     while (Serial.available() < 1) {}
 
-      // s.tempo = Serial.parseInt();
-      // Serial.println(s.tempo);
-      s.tempo = 128;
-      digitalWrite(LED_3, LED_OFF);
-      digitalWrite(LED_2, LED_OFF);
-      playSong(s);
-      delay(1000);
-      noTone(BUZZER_PIN);
-      digitalWrite(BUTTON_LED, LED_OFF);
-  }
+  //     // s.tempo = Serial.parseInt();
+  //     // Serial.println(s.tempo);
+  //     s.tempo = 128;
+  //     digitalWrite(LED_3, LED_OFF);
+  //     digitalWrite(LED_2, LED_OFF);
+  //     playSong(s);
+  //     delay(1000);
+  //     noTone(BUZZER_PIN);
+  //     digitalWrite(BUTTON_LED, LED_OFF);
+  // }
 }

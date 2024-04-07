@@ -11,8 +11,4 @@ typedef struct {
     short duration;
 } Note;
 
-
-//float calculateFrequency(int noteNumber, int octave);
-
-
 #endif
