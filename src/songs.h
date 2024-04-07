@@ -3,6 +3,8 @@
 
 #include "song.h"
 
+#define NUMBER_OF_SONGS 3
+
 // koniec -1
 // pauza 0
 //   A 1
