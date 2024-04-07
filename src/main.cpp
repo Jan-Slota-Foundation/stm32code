@@ -66,7 +66,7 @@ void setup() {
 
   setup_runner();
 
-  //digitalWrite(SERIAL_LED, LED_ON); 
+  digitalWrite(SERIAL_LED, LED_ON); 
   Serial.begin(9600);
 }
 

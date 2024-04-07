@@ -13,7 +13,7 @@ void handle_complex(int r1, int r2, State *state) {
   displayNumber(current_complex_song);
   if (r1 == 1) {
       state->playing = !state->playing;
-      Serial.printf("Playing: %d\n", current_complex_note);
+      Serial.printf("Playing: %d\n", current_complex_song);
   }
 
   if (r2 == 1) {

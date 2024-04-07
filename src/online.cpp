@@ -2,6 +2,7 @@
 #include <Arduino.h>
 
 void handle_online(int r1, int r2, State *state) {
+    Serial.println("Enter notes:");
     Song s;
     Note currentNote;
     int songIndex = 0;
@@ -32,6 +33,7 @@ void handle_online(int r1, int r2, State *state) {
     playSong(s);
     delay(1000);
     noTone(BUZZER_PIN);
+    Serial.println("Song played");
 }
 
 void finish_online_state() {

@@ -4,6 +4,7 @@
 #include "single_note.h"
 #include "scale.h"
 #include "complex.h"
+#include "online.h"
 
 State state;
 Button b1;
@@ -91,6 +92,7 @@ void handle_states(int r1, int r2)
         break;
 
     case WRITE_PLAY:
+        handle_online(r1, r2, &state);
         break;
 
     case STREAM:
@@ -124,6 +126,7 @@ void handle_state_change(int r1, int r2)
         break;
 
     case WRITE_PLAY:
+        finish_online_state();
         break;
 
     case STREAM:

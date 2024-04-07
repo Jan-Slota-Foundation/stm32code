@@ -30,7 +30,7 @@ const float notes[8][12] = {
 };
 
 double calculateFrequency(int noteNumber, int octave) {
-
+    if (noteNumber == 0) return 0;
     return notes[octave][noteNumber - 1];
     // // Handle pause
     // if (noteNumber == 0) {
