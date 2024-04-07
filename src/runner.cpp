@@ -5,6 +5,8 @@
 #include "scale.h"
 #include "complex.h"
 #include "online.h"
+#include "save.h"
+#include "stream.h"
 
 State state;
 Button b1;
@@ -96,9 +98,11 @@ void handle_states(int r1, int r2)
         break;
 
     case STREAM:
+        handle_stream(r1, r2, &state);
         break;
 
     case SAVE:
+        handle_save(r1, r2, &state);
         break;
 
     case LOAD:
@@ -130,9 +134,11 @@ void handle_state_change(int r1, int r2)
         break;
 
     case STREAM:
+    finish_stream_state();
         break;
 
     case SAVE:
+        finish_save_state();
         break;
 
     case LOAD:
