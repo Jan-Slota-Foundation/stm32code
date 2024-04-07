@@ -134,7 +134,7 @@ void handle_state_change(int r1, int r2)
         break;
 
     case STREAM:
-    finish_stream_state();
+        finish_stream_state();
         break;
 
     case SAVE:
@@ -156,7 +156,7 @@ void run(int change)
 
     handle_state(change);
 
-    //Serial.println(state.state);
+    Serial.println(state.state);
 
     if (state.state != state.lastState)
     {

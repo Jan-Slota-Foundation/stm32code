@@ -5,7 +5,6 @@
 #include "main.h"
 #include "button.h"
 
-
 /*
 log for printing/reading from serial:
 // get 2 numbers to print from serail
@@ -80,12 +79,17 @@ int melody[] = {
 int melodyLength = 6; // Number of notes in the melody
 
 void loop() {
-  // for (int i = 0; i < melodyLength; i++) {
-  //   tone(BUZZER_PIN, melody[i]); 
-  //   delay(500);  // Length of each note
-  //   noTone(BUZZER_PIN);
-  //   delay(100);  // Gap between notes
+  // "A" sound approximation - Loop 1
+  // for (int i = 300; i < 800; i += 10) { 
+  //   tone(BUZZER_PIN, i); // Ascending pitch
+  //   delay(2);
   // }
+  // for (int i = 800; i >= 300; i -= 10) { 
+  //   tone(BUZZER_PIN, i);  // Descending pitch
+  //   delay(5);
+  // }
+
+  // delay(1090); // Short pause
   int u = update_button(&b);
   run(u);
 }

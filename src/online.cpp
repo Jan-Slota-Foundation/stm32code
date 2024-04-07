@@ -46,6 +46,7 @@ void handle_online(int r1, int r2, State *state) {
             delay(1000);
             noTone(BUZZER_PIN);
             Serial.println("Song played");
+            state->songs[state->songIndex++] = s;
             found_terminate = -1;
         }
     }

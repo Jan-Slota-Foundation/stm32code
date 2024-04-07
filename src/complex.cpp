@@ -7,7 +7,6 @@ int current_complex_song = 2;
 int current_complex_note = 0;
 
 unsigned long last_complex_note_change = 0;
-int quater = 0;
 
 void handle_complex(int r1, int r2, State *state) {
   displayNumber(current_complex_song);

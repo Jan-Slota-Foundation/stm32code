@@ -19,6 +19,7 @@ typedef struct {
     Song songs[5];
     bool playing;
     RunnerStates lastState = NONE;
+    int songIndex = 0;
 } State;
 
 void setup_runner();
