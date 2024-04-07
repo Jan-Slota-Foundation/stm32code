@@ -13,4 +13,5 @@
     void update_fs(const tonefs& fs);
     int calculate_new_offset(const tonefs& fs);
     void nuke_fs();
+    void init_fs();
 #endif

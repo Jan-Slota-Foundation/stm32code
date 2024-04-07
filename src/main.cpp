@@ -13,31 +13,10 @@
 #define BUTTON_LEFT A1
 #define BUTTON_MIDDLE A2
 #define BUTTON_RIGHT A3
-#define BUZZER_PIN 3
 
 // led states
 #define LED_ON LOW
 #define LED_OFF HIGH
-
-/*
-  notes:
-  A
-  A#
-  B
-  C
-  C#
-  D
-  D#
-  E
-  F
-  F#
-  G
-  G#
-*/
-
-/*
-  LEDS ARE CATODE CONNECTED
-*/
 
 /*
 log for printing/reading from serial:
@@ -70,37 +49,8 @@ while (digitalRead(BUTTON_LEFT));     // wait until S1 (low active)
 */
 void playSong(const Song &song);
 
-double calculateFrequency(int noteNumber, int octave) {
-    // Handle pause
-    if (noteNumber == 0) {
-        return 0.0;
-    }
-
-    // Adjust note index for 1-based input
-    noteNumber = noteNumber - 1;
-    octave = octave - 1;
-    if (noteNumber != 0 && noteNumber != 2) {
-      octave -= 1;
-    }
-    // Ensure note is within valid range
-    if (noteNumber < 0 || noteNumber >= 12) {
-        return -1.0; // Indicate invalid note
-    }
-
-    // Ensure octave is valid
-    if (octave < 0 || octave > 8) {
-        return -1.0; // Indicate invalid octave
-    }
-
-    // Calculate the frequency
-    double res =  55.00 * pow(2.0, (noteNumber + (12 * octave)) / 12.0); 
-    // round here to 2 decimal places
-    float b = round(res * 100.0) / 100.0;
-    return b;
-}
-
 void setup() {
- /* pinMode(SERIAL_LED, OUTPUT);
+  pinMode(SERIAL_LED, OUTPUT);
   digitalWrite(SERIAL_LED, LED_OFF);
 
   pinMode(LED_2, OUTPUT);
@@ -120,24 +70,8 @@ void setup() {
 
   setupDisplay();
 
-  
-  digitalWrite(SERIAL_LED, LED_ON);  */
-
-  
-  // Initialize EEPROM
-  
-  nuke_fs();
-  Song debug1 = Song();
-  debug1.melody[0] = Note{1, 1, 1};
-  debug1.melody[1] = Note{2, 2, 2};
-  debug1.melody[2] = Note{3, 3, 3};
-
-  fs_write(debug1);
-  fs_write(debug1);
-
-  tonefs fs = get_fs();
-  int offset = calculate_new_offset(fs);
-
+  digitalWrite(SERIAL_LED, LED_ON); 
+  Serial.begin(9600);
 }
 
 void loop() {
@@ -183,23 +117,4 @@ void loop() {
   // if (x == 8) {
   //   digitalWrite(BUTTON_LED,t67tftLED_ON);
   // }
-}
-
-
-void playSong(const Song &song) {
-    // Calculate duration of a quarter note in milliseconds
-    float quarterNoteDuration = 60000.0 / song.tempo; 
-    float fullNoteDuration = quarterNoteDuration * 4;
-
-    for (int i = 0; i < MAX_NOTES && song.melody[i].note != ('K' - '0'); i++) {
-        double frequency = calculateFrequency(song.melody[i].note, song.melody[i].octave); 
-        int noteDuration = quarterNoteDuration * song.melody[i].duration;
-
-        tone(BUZZER_PIN, frequency, noteDuration);
-        delay(noteDuration); // Rest is implied, no extra calculations needed
-        noTone(BUZZER_PIN);
-        delay(fullNoteDuration - noteDuration); // Rest is implied, no extra calculations needed
-
-        delay(1000);
-    }
 }
