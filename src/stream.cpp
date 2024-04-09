@@ -33,7 +33,6 @@ void handle_stream(int r1, int r2, State *state) {
         quater * state->songs[song_to_play].melody[current_stream_note].duration);
         }
     }
-
 }
 
 void finish_stream_state() {

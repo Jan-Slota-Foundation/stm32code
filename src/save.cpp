@@ -7,7 +7,7 @@ bool stuff_to_save = true;
 unsigned long last_blink = 0;
 int song_to_save = 0;
 
-unsigned long last_stream_not_change = 0;
+unsigned long last_save_not_change = 0;
 int current_save_note = 0;
 
 void handle_save(int r1, int r2, State *state)
@@ -48,8 +48,8 @@ void handle_save(int r1, int r2, State *state)
         {
             int quater = MS_IN_MINUTE / state->songs[song_to_save].tempo;
             int change = quater * state->songs[song_to_save].melody[current_save_note].duration;
-            if (millis() - last_stream_not_change > change + 50) {
-            last_stream_not_change = millis();
+            if (millis() - last_save_not_change > change + 50) {
+            last_save_not_change = millis();
             current_save_note += 1;
             if (state->songs[song_to_save].melody[current_save_note].note == TERMINATE) {
                 current_save_note = 0;
@@ -76,10 +76,10 @@ void handle_save(int r1, int r2, State *state)
 
 void finish_save_state()
 {
-    // save_init = 0;
-    // stuff_to_save = true;
-    // last_blink = 0;
-    // song_to_save = 0;
-    // current_save_note = 0;
-    // noTone(BUZZER_PIN);
+    save_init = 0;
+    stuff_to_save = true;
+    last_blink = 0;
+    song_to_save = 0;
+    current_save_note = 0;
+    noTone(BUZZER_PIN);
 }

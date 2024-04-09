@@ -7,6 +7,7 @@
 #include "online.h"
 #include "save.h"
 #include "stream.h"
+#include "load.h"
 
 State state;
 Button b1;
@@ -106,6 +107,7 @@ void handle_states(int r1, int r2)
         break;
 
     case LOAD:
+        handle_load(r1, r2, &state);
         break;
 
     default:
@@ -142,6 +144,7 @@ void handle_state_change(int r1, int r2)
         break;
 
     case LOAD:
+        finish_load_state();
         break;
 
     default:
